@@ -1,21 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import ProductList from './ProductList'; // Import the new ProductList component
 import './App.css';
 
 function App() {
-  const [message, setMessage] = useState('');
-
-  useEffect(() => {
-    fetch('/api') // Proxy will redirect this to http://localhost:3001/api
-      .then(response => response.text())
-      .then(data => setMessage(data))
-      .catch(error => console.error('Error fetching message:', error));
-  }, []);
-
   return (
     <div className="App">
       <header className="App-header">
-        <h1>Frontend says:</h1>
-        <p>{message ? message : 'Loading...'}</p>
+        <h1>Welcome to the Product App</h1>
+        <ProductList /> {/* Render the ProductList component */}
       </header>
     </div>
   );
