@@ -1,0 +1,41 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lernam-debug.log*
+
+# Diagnostic reports (https://nodejs.org/api/report.html)
+.node_reports/
+
+# Runtime data
+*.tgz
+pids
+*.pid
+*.seed
+*.info
+
+# Directory for application specific temporary files
+tmp/
+
+#dotenv environment variables file
+.env
+.env.production
+.env.local
+.env.development.local
+.env.test.local
+.env.staging.local
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional REPL history
+.node_repl_history
