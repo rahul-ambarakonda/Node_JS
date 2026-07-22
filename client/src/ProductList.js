@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import ProductCard from './ProductCard';
+import './ProductList.css'; // Import the new CSS file
 
 function ProductList() {
   const [products, setProducts] = useState([]);
@@ -35,18 +37,16 @@ function ProductList() {
   }
 
   return (
-    <div>
-      <h2>Products</h2>
+    <div className="product-list-container">
+      <h2>Our Products</h2>
       {products.length === 0 ? (
         <p>No products available.</p>
       ) : (
-        <ul>
+        <div className="product-grid">
           {products.map(product => (
-            <li key={product.id}>
-              {product.name} - ${product.price}
-            </li>
+            <ProductCard key={product.id} product={product} />
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );
