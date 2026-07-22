@@ -1,0 +1,113 @@
+```yaml
+# What this project is: A Node.js project that serves as a backend RESTful API designed to manage and expose data for specific application resources. It provides endpoints for CRUD (Create, Read, Update, Delete) operations and implements core business logic.
+# Tech Stack: Node.js, TypeScript, Express.js, TypeORM, Jest.
+#
+# Implemented in this sprint: NJA-2, NJA-3, NJA-4, NJA-6, NJA-7, NJA-9, NJA-10, NJA-12, NJA-13, NJA-14, NJA-15
+
+name: CI/CD
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  ci:
+    name: Continuous Integration
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Using a recent LTS version of Node.js
+          # cache: 'npm' # Rule 9: Do NOT enable npm cache as it errors when no lockfile exists
+
+      - name: Install dependencies
+        run: | # Rule 9: Install with lockfile fallback
+          if [ -f package-lock.json ]; then npm ci; else npm install; fi
+
+      - name: Run lint
+        run: npm run lint --if-present
+        continue-on-error: true # Rule 9: Run tests and lint best-effort
+
+      - name: Run tests
+        run: npm test --if-present
+        continue-on-error: true # Rule 9: Run tests and lint best-effort
+
+  deploy:
+    name: Deploy to EC2
+    runs-on: ubuntu-latest
+    needs: ci
+    if: github.ref == 'refs/heads/main' # Rule 5: Deploy ONLY runs on push to main
+
+    env:
+      EC2_HOST: ${{ secrets.EC2_HOST }} # Rule 11: Setup EC2_HOST env var for skip check
+
+    steps:
+      - name: Check for deploy secrets
+        if: env.EC2_HOST == '' # Rule 11: Skip notice if secrets are not configured
+        run: |
+          echo "No EC2_HOST secret found. Skipping deploy."
+          exit 0 # Exit cleanly to indicate success despite skipping deploy
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        if: env.EC2_HOST != '' # Rule 11: Guard deploy steps
+
+      - name: Deploy to EC2 via SSH
+        uses: appleboy/ssh-action@v1.0.0 # Rule 3
+        if: env.EC2_HOST != '' # Rule 11: Guard deploy steps
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: | # Rule 4: Deploy script block
+            # Rule 4a: Source nvm
+            export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+
+            # Rule 4b: cd to deploy path
+            cd ${{ secrets.EC2_DEPLOY_PATH }}
+
+            # Rule 4c: Fetch and hard-reset to remote
+            git fetch origin main
+            git reset --hard origin/main
+
+            # Rule 4d: Sync new env vars from .env.sample into .env
+            if [ -f .env.sample ]; then
+              touch .env
+              while IFS= read -r line; do
+                # skip blank lines and comments
+                [[ -z "$line" || "$line" == \#* ]] && continue
+                key=$(echo "$line" | cut -d= -f1)
+                # only append if key not already present in .env
+                if ! grep -q "^${key}=" .env 2>/dev/null; then
+                  echo "$line" >> .env
+                  echo "⚠️  New env var added (set real value): ${key}"
+                fi
+              done < .env.sample
+            fi
+
+            # Rule 4e: Install dependencies WITHOUT assuming a lockfile exists
+            if [ -f package-lock.json ]; then npm ci; else npm install; fi
+
+            # Rule 4f: Run build step if the project has one
+            npm run build --if-present
+
+            # Rule 4g: Restart the app with PM2 using zero-downtime reload
+            # Assuming 'npm run build' outputs a JavaScript entrypoint, e.g., 'dist/index.js'
+            pm2 reload app --update-env || pm2 start dist/index.js --name app
+
+            # Rule 4h: pm2 save
+            pm2 save
+```
