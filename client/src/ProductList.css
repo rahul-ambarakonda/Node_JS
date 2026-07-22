@@ -1,65 +1,73 @@
 .product-list-container {
-  padding: 20px;
-  background-color: #f4f7f6; /* Light background for the whole list */
+  padding: 20px 0;
+  /* Removed background-color here to let body background shine */
+}
+
+.product-list-container h2 {
+  text-align: center;
+  margin-bottom: 40px; /* More space below the heading */
+  font-size: 2.2em; /* Prominent heading */
+  color: var(--text-color);
+  font-weight: 700;
 }
 
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Slightly wider cards */
-  gap: 25px; /* Increased gap */
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 30px; /* Increased gap for better spacing */
   justify-content: center;
-  max-width: 1200px; /* Max width for the grid */
-  margin: 0 auto; /* Center the grid */
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .product-card {
-  background-color: #ffffff;
-  border: 1px solid #e0e0e0;
-  border-radius: 12px; /* Softer rounded corners */
-  padding: 20px; /* More padding */
+  background-color: var(--card-background-color);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 20px;
   text-align: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Stronger, modern shadow */
-  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* Smooth transitions for hover */
+  box-shadow: 0 4px 12px var(--shadow-color);
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* Distribute space */
+  justify-content: space-between;
 }
 
 .product-card:hover {
-  transform: translateY(-8px); /* Lift effect */
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
+  transform: translateY(-8px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 .product-image {
   max-width: 100%;
-  height: 200px; /* Fixed height for images */
-  object-fit: contain; /* Ensure image fits without cropping, maintaining aspect ratio */
-  border-radius: 8px; /* Rounded corners for images */
-  margin-bottom: 15px; /* Increased margin */
-  background-color: #f9f9f9; /* Light background for image area */
+  height: 200px;
+  object-fit: contain;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  background-color: var(--background-color); /* Use a variable for consistency */
 }
 
 .product-name {
-  font-family: 'Arial', sans-serif; /* Clearer font */
-  font-size: 1.4em; /* Larger font size */
-  font-weight: 700; /* Bolder */
-  color: #333333; /* Darker color */
-  margin: 10px 0 5px 0; /* Adjusted margins */
-  line-height: 1.3; /* Improved readability */
+  font-family: inherit; /* Inherit global font, adjust size/weight */
+  font-size: 1.3em;
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 10px 0 5px 0;
+  line-height: 1.3;
 }
 
 .product-brand {
-  font-family: 'Verdana', sans-serif; /* Different font for distinction */
-  font-size: 1em; /* Slightly larger */
-  color: #555555; /* Slightly darker */
-  margin-bottom: 10px; /* Adjusted margin */
-  font-weight: 500;
+  font-family: inherit; /* Inherit global font */
+  font-size: 0.95em;
+  color: var(--secondary-color);
+  margin-bottom: 10px;
+  font-weight: 400;
 }
 
 .product-price {
-  font-family: 'Georgia', serif; /* Distinct font for price */
-  font-size: 1.6em; /* Prominent price */
-  color: #008060; /* A more pleasant green */
+  font-family: inherit; /* Inherit global font, adjust size/weight */
+  font-size: 1.5em;
+  color: var(--primary-color); /* Use primary color for price */
   font-weight: bold;
-  margin-top: 15px; /* Increased top margin */
+  margin-top: 15px;
 }
