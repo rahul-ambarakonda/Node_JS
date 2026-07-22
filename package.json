@@ -4,7 +4,9 @@
   "description": "A basic Node.js Express backend skeleton",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "start:backend": "node server.js",
+    "dev": "npm run start:backend"
   },
   "keywords": [],
   "author": "",
